@@ -1,0 +1,60 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Chromatic
+providerId: chromatic
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Visual Testing
+- Storybook
+- GraphQL
+- Rate Limiting
+- Quotas
+description: >-
+  Chromatic does not publish fixed numeric per-second or per-minute rate limits for
+  its public GraphQL API. In practice the effective limit that matters is the
+  monthly snapshot allowance of your plan, and the CLI's own concurrency: builds
+  run in parallel up to your plan's parallelism and the CLI polls build status over
+  GraphQL until completion. When a build cannot be fully snapshotted within your
+  quota it is marked isLimited (representative stories only) rather than throttled
+  with an error. Numeric GraphQL request-rate limits are not documented as of the
+  review date.
+notes: >-
+  The billing constraint (snapshots/month) is the real governor of Chromatic usage,
+  not an HTTP request-rate cap. Verify any documented GraphQL limits and parallelism
+  settings on the Chromatic docs during reconciliation.
+sources:
+- https://www.chromatic.com/docs/cli/
+- https://www.chromatic.com/docs/billing/
+- https://www.chromatic.com/docs/turbosnap/
+- https://github.com/chromaui/chromatic-cli
+responseCodes:
+  throttled: 429
+limits:
+- name: GraphQL API Request Rate
+  scope: token
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is documented for the public GraphQL API.
+- name: Monthly Snapshot Allowance
+  scope: account
+  metric: snapshots
+  limit: per plan (Free 5,000; Starter 35,000; Pro 85,000; Enterprise unlimited)
+  notes: The dominant usage governor. Builds exceeding quota are marked isLimited.
+- name: Build Parallelism
+  scope: account
+  metric: concurrent builds
+  limit: per plan
+  notes: Snapshots run in parallel across cloud browsers; plans include unlimited parallel test runs.
+policies:
+- name: Snapshot Quota Limiting
+  description: When snapshot quota is insufficient, a build is limited to representative stories (isLimited=true) instead of failing.
+- name: TurboSnap
+  description: Change detection skips snapshotting unchanged stories, reducing snapshot usage by up to roughly 80 percent.
+- name: Backoff Strategy
+  description: The Chromatic CLI retries GraphQL calls with backoff and polls build status until the build reaches a terminal status.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

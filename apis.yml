@@ -1,0 +1,151 @@
+aid: chromatic
+url: https://raw.githubusercontent.com/api-evangelist/chromatic/refs/heads/main/apis.yml
+name: Chromatic
+kind: company
+description: Chromatic is a cloud visual testing and UI review platform built by the
+  maintainers of Storybook. It captures snapshots of components and pages across
+  cloud browsers, then compares each new snapshot to a stored baseline to catch
+  visual regressions in appearance, layout, fonts, and color. Chromatic runs visual
+  tests, interaction tests, and accessibility (axe) tests against Storybook,
+  Playwright, and Cypress, with UI Review, TurboSnap change detection, and Git/CI
+  integration. Its primary developer surface is the Chromatic CLI, which uploads
+  builds and drives testing over a documented public GraphQL API at
+  index.chromatic.com used by the CLI and the Storybook Visual Tests addon.
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+tags:
+- Visual Testing
+- Visual Regression
+- Storybook
+- UI Testing
+- Snapshot Testing
+- Frontend
+- GraphQL
+created: '2026-07-11'
+modified: '2026-07-11'
+specificationVersion: '0.19'
+apis:
+- aid: chromatic:chromatic-builds-api
+  name: Chromatic Builds API
+  tags:
+  - Visual Testing
+  - Visual Regression
+  - Builds
+  - Snapshots
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.chromatic.com/docs/cli/
+  baseURL: https://index.chromatic.com/graphql
+  properties:
+  - url: https://www.chromatic.com/docs/cli/
+    type: Documentation
+  - url: graphql/chromatic-public-schema.graphql
+    type: GraphQL
+  - url: graphql/chromatic-graphql.md
+    type: GraphQL
+  - url: collections/chromatic.opencollection.json
+    type: OpenCollection
+  - url: collections/chromatic.postman_collection.json
+    type: PostmanCollection
+  description: Query builds produced by the Chromatic CLI - the `build(id)` and
+    `project.lastBuild(...)` GraphQL fields expose build number, status
+    (IN_PROGRESS, PASSED, PENDING, ACCEPTED, DENIED, BROKEN, FAILED), result,
+    browsers, Git commit/branch/slug, component and story counts, published
+    Storybook URLs, and snapshot capture timings. This is the surface the CLI and
+    Storybook Visual Tests addon use to initialize and poll visual-testing builds.
+- aid: chromatic:chromatic-tests-review-api
+  name: Chromatic Tests and Review API
+  tags:
+  - Visual Testing
+  - UI Testing
+  - Tests
+  - Review
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.chromatic.com/docs/review/
+  baseURL: https://index.chromatic.com/graphql
+  properties:
+  - url: https://www.chromatic.com/docs/review/
+    type: Documentation
+  - url: graphql/chromatic-public-schema.graphql
+    type: GraphQL
+  - url: graphql/chromatic-graphql.md
+    type: GraphQL
+  - url: collections/chromatic.opencollection.json
+    type: OpenCollection
+  - url: collections/chromatic.postman_collection.json
+    type: PostmanCollection
+  description: Inspect and act on individual visual tests. A Test carries its status,
+    result, baseline, and per-browser snapshot comparisons (TestComparison with
+    base/head captures and pixel diffs). The `reviewTest` mutation accepts, denies,
+    or resets visual changes, optionally batched across a story, component, or the
+    whole build - the same accept/deny workflow exposed in the Chromatic UI.
+- aid: chromatic:chromatic-projects-accounts-api
+  name: Chromatic Projects and Accounts API
+  tags:
+  - Projects
+  - Accounts
+  - Tokens
+  - UI Testing
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.chromatic.com/docs/setup/
+  baseURL: https://index.chromatic.com/graphql
+  properties:
+  - url: https://www.chromatic.com/docs/setup/
+    type: Documentation
+  - url: graphql/chromatic-public-schema.graphql
+    type: GraphQL
+  - url: graphql/chromatic-graphql.md
+    type: GraphQL
+  - url: collections/chromatic.opencollection.json
+    type: OpenCollection
+  - url: collections/chromatic.postman_collection.json
+    type: PostmanCollection
+  description: Resolve project and account context. The `project(id)` field returns
+    the project name, enabled features (uiReview, uiTests), branch names, project
+    token, and manage/web URLs; `account(id)` and `viewer` expose account name,
+    subscription status, and project lists. The `createCLIToken` mutation mints a
+    short-lived CLI token from a project ID for authenticating build uploads.
+- aid: chromatic:chromatic-storybook-stories-api
+  name: Chromatic Storybook and Stories API
+  tags:
+  - Storybook
+  - Stories
+  - Components
+  - Visual Testing
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  humanURL: https://www.chromatic.com/docs/storybook/
+  baseURL: https://index.chromatic.com/graphql
+  properties:
+  - url: https://www.chromatic.com/docs/storybook/
+    type: Documentation
+  - url: graphql/chromatic-public-schema.graphql
+    type: GraphQL
+  - url: graphql/chromatic-graphql.md
+    type: GraphQL
+  - url: collections/chromatic.opencollection.json
+    type: OpenCollection
+  - url: collections/chromatic.postman_collection.json
+    type: PostmanCollection
+  description: Read the published Storybook and its structure. The `storybook(url)`
+    query and the Story and Component node types expose the components and stories
+    captured in a build, their CSF story IDs, test parameters, viewport/modes, and
+    canvas URLs - the mapping between a published Storybook and the tests Chromatic
+    runs against it.
+common:
+- type: GitHubOrganization
+  url: https://github.com/chromaui
+- type: LinkedIn
+  url: https://www.linkedin.com/company/chromaticcom
+- type: Website
+  url: https://www.chromatic.com
+- type: Documentation
+  url: https://www.chromatic.com/docs/
+- type: Plans
+  url: plans/chromatic-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/chromatic-rate-limits.yml
+- type: FinOps
+  url: finops/chromatic-finops.yml
+- url: https://www.chromatic.com/blog/
+  type: Blog
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

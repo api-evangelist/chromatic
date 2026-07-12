@@ -1,0 +1,152 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Chromatic Public GraphQL API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{chromaticToken}}"
+    },
+    "baseUrl": "https://index.chromatic.com/graphql"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Builds",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Get a build by ID.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query Build($id: ID!) { build(id: $id) { id number status ... on CompletedBuild { result browsers { key } branch commit componentCount specCount storybookUrl webUrl } } }\",\"variables\":{\"id\":\"BUILD_ID\"}}"
+            }
+          },
+          "docs": "Fetch a single build with status, result, browsers, Git metadata, component/story counts, and published Storybook URLs."
+        },
+        {
+          "info": { "name": "Get the last build for a project.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query LastBuild($id: ID!) { project(id: $id) { lastBuild(defaultBranch: true, statuses: [PASSED, PENDING, ACCEPTED]) { id number status } } }\",\"variables\":{\"id\":\"PROJECT_ID\"}}"
+            }
+          },
+          "docs": "Retrieve the most recent build for a project, filtered by branch, status, and result."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Tests and Review",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "List tests for a completed build.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query Tests($id: ID!) { build(id: $id) { ... on CompletedBuild { testCount(statuses: [PENDING]) tests(first: 20) { edges { node { id status result story { name } comparisons { result browser { key } } } } } } } }\",\"variables\":{\"id\":\"BUILD_ID\"}}"
+            }
+          },
+          "docs": "List visual tests on a completed build with per-browser snapshot comparisons and diffs."
+        },
+        {
+          "info": { "name": "Review a test (accept / deny / reset).", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation ReviewTest($input: ReviewTestInput!) { reviewTest(input: $input) { updatedTests { id status } userErrors { message } } }\",\"variables\":{\"input\":{\"testId\":\"TEST_ID\",\"status\":\"ACCEPTED\",\"batch\":\"SPEC\"}}}"
+            }
+          },
+          "docs": "Accept, deny, or reset a visual test, optionally batched across the spec, component, or whole build."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Projects and Accounts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Get a project.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query Project($id: ID!) { project(id: $id) { id name features { uiReview uiTests } branchNames webUrl } }\",\"variables\":{\"id\":\"PROJECT_ID\"}}"
+            }
+          },
+          "docs": "Resolve project name, enabled features, branch names, and web URLs."
+        },
+        {
+          "info": { "name": "Get the authenticated viewer.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query Viewer { viewer { id } }\"}"
+            }
+          },
+          "docs": "Return the authenticated user for the supplied token."
+        },
+        {
+          "info": { "name": "Create a CLI token.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"mutation CreateCLIToken($projectId: String!) { createCLIToken(projectId: $projectId) }\",\"variables\":{\"projectId\":\"PROJECT_ID\"}}"
+            }
+          },
+          "docs": "Mint a short-lived CLI token from a project ID for authenticating build uploads."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Storybook and Stories",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": { "name": "Get a published Storybook by URL.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://index.chromatic.com/graphql",
+            "headers": [{ "name": "Content-Type", "value": "application/json" }],
+            "body": {
+              "type": "json",
+              "data": "{\"query\":\"query Storybook($url: URL!) { storybook(url: $url) { __typename } }\",\"variables\":{\"url\":\"https://STORYBOOK_URL\"}}"
+            }
+          },
+          "docs": "Read the published Storybook for a build and its components/stories."
+        }
+      ]
+    }
+  ]
+}

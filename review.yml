@@ -1,0 +1,94 @@
+aid: chromatic
+name: Chromatic
+review:
+  question: Does Chromatic expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-11'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. Chromatic's public developer surface is a
+    documented GraphQL API at https://index.chromatic.com/graphql, consumed as
+    request/response GraphQL over HTTPS by the Chromatic CLI and the Storybook
+    Visual Tests addon. There is no server-push transport (WebSocket or SSE) on
+    Chromatic's own public API to model - the CLI observes build progress by
+    polling the GraphQL `build`/`project.lastBuild` fields until a build reaches a
+    terminal status, not by subscribing to a stream.
+findings:
+  summary: |
+    Chromatic does not publish a documented public WebSocket API. Chromatic is a
+    cloud visual testing and UI review platform built by the maintainers of
+    Storybook (Chroma Software Inc.). Its documented public developer surface is a
+    GraphQL API at https://index.chromatic.com/graphql, used by the Chromatic CLI
+    (`npx chromatic`) and the official Storybook Visual Tests addon, which pins the
+    public GraphQL schema. The API is request/response GraphQL over HTTPS,
+    authenticated with a per-project token (CHROMATIC_PROJECT_TOKEN) for CI/CLI runs
+    or a user OAuth token for the addon. No realtime, bidirectional, or streaming
+    WebSocket (ws:// or wss://) endpoint is documented on Chromatic's own API; build
+    status is obtained by polling GraphQL, and CI results surface as Git PR status
+    checks rather than via a public webhook or socket.
+  openSource: |
+    Chromatic itself is a hosted SaaS, not open source, but its client tooling is
+    open source: the Chromatic CLI (github.com/chromaui/chromatic-cli) and the
+    Storybook Visual Tests addon (github.com/chromaui/addon-visual-tests), the
+    latter of which vendors the public GraphQL schema at
+    src/gql/public-schema.graphql. Storybook, the framework Chromatic is built
+    around, is open source (MIT).
+  transports:
+    - protocol: GraphQL
+      scheme: https
+      baseURL: https://index.chromatic.com/graphql
+      documented: true
+      note: Public GraphQL API used by the Chromatic CLI and Storybook Visual Tests addon. Request/response over HTTPS.
+    - protocol: REST
+      scheme: https
+      documented: false
+      note: Chromatic does not publish a separate public REST management API; all programmatic access is via the GraphQL endpoint.
+    - protocol: Webhook
+      scheme: https
+      documented: false
+      note: No public outbound webhook API is documented. CI results appear as Git provider PR status checks; Slack/notification wiring is configured in-product, not via a documented webhook API.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in Chromatic's docs, CLI, or public GraphQL schema as of the review date. Build progress is polled over GraphQL.
+  queryRootFields:
+    - build(id) -> Build
+    - project(id) -> Project (name, features, branchNames, projectToken, lastBuild)
+    - account(id) -> Account
+    - viewer -> User
+    - storybook(url) -> Storybook
+    - figmaMetadata / bulkFigmaMetadata / figmaMetadataById -> FigmaMetadata
+  mutationRootFields:
+    - reviewTest(input) -> ReviewTestPayload (accept / deny / reset a visual test)
+    - createCLIToken(projectId) -> String
+    - createFigmaMetadata / bulkCreateFigmaMetadata / removeFigmaMetadata / bulkRemoveFigmaMetadata
+    - updateUserPreferences(input) -> UpdateUserPreferencesPayload
+sources:
+  - url: https://www.chromatic.com/docs/
+    type: Documentation
+    note: Product/docs overview; visual, interaction, and accessibility tests; UI Review; TurboSnap. Made by the maintainers of Storybook.
+  - url: https://www.chromatic.com/docs/cli/
+    type: Documentation
+    note: Chromatic CLI. Confirms GraphQL API usage (exit code 202 = GraphQL API error) and project-token auth. No WebSocket mentioned.
+  - url: https://github.com/chromaui/addon-visual-tests
+    type: SourceCode
+    note: Storybook Visual Tests addon; uses the Chromatic public GraphQL API at index.chromatic.com/graphql and vendors the public schema.
+  - url: https://github.com/chromaui/chromatic-cli
+    type: SourceCode
+    note: Open-source CLI; runs GraphQL queries/mutations and polls build status. No WebSocket transport.
+  - url: https://www.chromatic.com/pricing/
+    type: Pricing
+    note: Free tier 5,000 snapshots/month; Starter $179 (35k); Pro $399 (85k); overage ~$0.008/snapshot; Enterprise custom.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. Chromatic's own public API is a
+    documented request/response GraphQL endpoint (index.chromatic.com/graphql). No
+    AsyncAPI document was created because there is no server-push transport on
+    Chromatic's own API to model; the GraphQL schema exposes queries and mutations
+    only (no subscriptions), and build progress is obtained by polling.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,166 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Chromatic
+providerId: chromatic
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Visual Testing
+- Visual Regression
+- Storybook
+- UI Testing
+- Plans
+description: >-
+  Chromatic is billed by snapshots, not by API calls. A snapshot is one captured
+  image of one story in one browser at one viewport; TurboSnap and the parallel/
+  cross-browser matrix multiply snapshot counts. Every published tier includes
+  unlimited projects, users, collaborators, and parallel test runs, plus Git/CI
+  integration. The Free tier includes 5,000 snapshots per month; paid tiers raise
+  the included allowance, add cross-browser testing (Safari, Firefox, Edge), and
+  bill overage per snapshot. The GraphQL API and CLI carry no separate fee - usage
+  is metered on the snapshots the builds produce.
+notes: >-
+  Prices captured from chromatic.com/pricing on 2026-07-11 and may change. TurboSnap
+  equivalents shown by Chromatic (e.g. 5,000 snapshots ~= 25,000 TurboSnaps) assume
+  most snapshots are skipped by change detection; actual mileage varies. Verify
+  current numbers on the pricing page during reconciliation.
+sources:
+- https://www.chromatic.com/pricing/
+- https://www.chromatic.com/docs/billing/
+- https://www.chromatic.com/docs/turbosnap/
+plans:
+- id: chromatic-free
+  name: Free
+  type: free
+  description: >-
+    Free-forever tier with 5,000 snapshots per month (roughly 25,000 TurboSnap
+    equivalents), Chrome testing, unlimited projects, users, and collaborators,
+    Git/CI integration, and UI version tracking. No credit card required.
+  entries:
+  - label: Included Snapshots
+    name: free_snapshots
+    type: usage
+    metric: snapshots
+    limit: 5000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '$0'
+    userMultiplied: false
+  elements:
+  - name: Chrome Visual Testing
+  - name: Unlimited Projects and Users
+  - name: Git and CI Integration
+  - name: UI Version Tracking
+  - name: Public GraphQL API and CLI
+- id: chromatic-starter
+  name: Starter
+  type: paid
+  description: >-
+    Paid tier at $179/month including 35,000 snapshots per month (roughly 175,000
+    TurboSnap equivalents), adding cross-browser testing on Safari, Firefox, and
+    Edge on top of everything in Free. Overage billed per snapshot.
+  entries:
+  - label: Monthly Subscription
+    name: starter_subscription
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '$179 per month'
+    userMultiplied: false
+  - label: Included Snapshots
+    name: starter_snapshots
+    type: usage
+    metric: snapshots
+    limit: 35000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included in subscription
+    userMultiplied: false
+  - label: Overage Snapshots
+    name: starter_overage
+    type: usage
+    metric: snapshots
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '$0.008 per snapshot over the included allowance'
+    userMultiplied: false
+  elements:
+  - name: Everything in Free
+  - name: Safari, Firefox, and Edge Testing
+- id: chromatic-pro
+  name: Pro
+  type: paid
+  description: >-
+    Paid tier at $399/month including 85,000 snapshots per month (roughly 425,000
+    TurboSnap equivalents), adding custom domain support on top of everything in
+    Starter. Overage billed per snapshot.
+  entries:
+  - label: Monthly Subscription
+    name: pro_subscription
+    type: flat
+    metric: subscription
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '$399 per month'
+    userMultiplied: false
+  - label: Included Snapshots
+    name: pro_snapshots
+    type: usage
+    metric: snapshots
+    limit: 85000
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: included in subscription
+    userMultiplied: false
+  - label: Overage Snapshots
+    name: pro_overage
+    type: usage
+    metric: snapshots
+    limit: -1
+    timeFrame: month
+    geo: global
+    unit: 1
+    price: '$0.008 per snapshot over the included allowance'
+    userMultiplied: false
+  elements:
+  - name: Everything in Starter
+  - name: Custom Domain
+- id: chromatic-enterprise
+  name: Enterprise
+  type: enterprise
+  description: >-
+    Custom plan with unlimited snapshots, unlimited accessibility usage, SSO and
+    custom Git integrations, priority support and SLA, and configurable data
+    retention. Contact Chromatic sales.
+  entries:
+  - label: Enterprise Agreement
+    name: enterprise
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: global
+    unit: 1
+    price: contact sales
+    userMultiplied: false
+  elements:
+  - name: Everything in Pro
+  - name: Unlimited Accessibility Usage
+  - name: SSO and Custom Git Integrations
+  - name: Priority Support and SLA
+  - name: Configurable Data Retention
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

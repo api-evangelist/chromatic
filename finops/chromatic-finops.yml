@@ -1,0 +1,91 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Chromatic
+providerId: chromatic
+created: '2026-07-11'
+modified: '2026-07-11'
+reconciled: false
+tags:
+- Visual Testing
+- Storybook
+- UI Testing
+- FinOps
+- Cost Management
+- FOCUS
+description: >-
+  FinOps view of Chromatic spend. Chromatic is a SaaS visual testing platform billed
+  on a subscription plus snapshot-usage model: each tier bundles a monthly snapshot
+  allowance and cross-browser scope, and snapshots consumed above the allowance are
+  billed as overage (about $0.008 per snapshot on Starter and Pro). The primary cost
+  driver is snapshot volume, which is the product of stories tested, browsers, and
+  viewports per build multiplied by build frequency in CI. TurboSnap change detection
+  is the main lever to cut cost by only snapshotting changed stories.
+notes: >-
+  Snapshot overage rate and included allowances captured from chromatic.com/pricing
+  on 2026-07-11; verify during reconciliation. Enterprise pricing is custom.
+sources:
+- https://www.chromatic.com/pricing/
+- https://www.chromatic.com/docs/billing/
+- https://www.chromatic.com/docs/turbosnap/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Chromatic
+serviceCategory: Developer Tools and Testing
+billingModel:
+  pricingCategory: Subscription-Plus-Usage
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Purchase
+  - Usage
+  - Adjustment
+focusColumns:
+  ServiceName: Chromatic
+  ServiceCategory: Developer Tools and Testing
+  ProviderName: Chromatic
+  PublisherName: Chromatic
+  InvoiceIssuerName: Chromatic
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Subscription-Plus-Usage
+meters:
+- name: subscription
+  description: Fixed monthly plan fee (Starter $179, Pro $399) bundling an included snapshot allowance.
+  unit: subscription
+  aggregation: sum
+  dimensions:
+  - account
+  - plan
+- name: snapshots
+  description: Captured snapshots (one image per story, per browser, per viewport); billed as overage above the plan allowance.
+  unit: snapshots
+  aggregation: sum
+  dimensions:
+  - account
+  - project
+  - browser
+- name: turbosnap_savings
+  description: Snapshots skipped by TurboSnap change detection, reducing billable snapshot volume.
+  unit: snapshots
+  aggregation: sum
+  dimensions:
+  - account
+  - project
+principles:
+- name: Visibility
+  description: Track snapshots per project, browser, and viewport, and monitor monthly usage against the plan allowance to anticipate overage.
+- name: Allocation
+  description: Split Chromatic projects per app/team so snapshot usage and overage map to internal cost centers.
+- name: Optimization
+  description: Enable TurboSnap to skip unchanged stories, trim redundant browsers/viewports, and gate visual tests to meaningful branches/PRs to reduce snapshot volume.
+- name: Accountability
+  description: Assign project owners and review snapshot burn against the plan allowance each billing cycle before overage accrues.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

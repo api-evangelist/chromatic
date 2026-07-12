@@ -1,0 +1,119 @@
+{
+  "info": {
+    "name": "Chromatic Public GraphQL API",
+    "description": "Chromatic is a cloud visual testing and UI review platform built by the maintainers of Storybook. Its public GraphQL API (used by the Chromatic CLI and the Storybook Visual Tests addon) lives at https://index.chromatic.com/graphql. Authenticate with a project token (CHROMATIC_PROJECT_TOKEN) for CI/CLI, or a user token for the addon. Requests are GraphQL POST bodies.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{chromaticToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://index.chromatic.com/graphql", "type": "string" },
+    { "key": "chromaticToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Builds",
+      "item": [
+        {
+          "name": "Get a build by ID",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query Build($id: ID!) { build(id: $id) { id number status ... on CompletedBuild { result branch commit componentCount specCount storybookUrl webUrl } } }\",\n  \"variables\": { \"id\": \"BUILD_ID\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Fetch a single build with status, result, Git metadata, component/story counts, and published Storybook URLs."
+          }
+        },
+        {
+          "name": "Get the last build for a project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query LastBuild($id: ID!) { project(id: $id) { lastBuild(defaultBranch: true, statuses: [PASSED, PENDING, ACCEPTED]) { id number status } } }\",\n  \"variables\": { \"id\": \"PROJECT_ID\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Retrieve the most recent build for a project, filtered by branch, status, and result."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tests and Review",
+      "item": [
+        {
+          "name": "List tests for a completed build",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query Tests($id: ID!) { build(id: $id) { ... on CompletedBuild { testCount(statuses: [PENDING]) tests(first: 20) { edges { node { id status result story { name } comparisons { result browser { key } } } } } } } }\",\n  \"variables\": { \"id\": \"BUILD_ID\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "List visual tests on a completed build with per-browser snapshot comparisons and diffs."
+          }
+        },
+        {
+          "name": "Review a test (accept / deny / reset)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"mutation ReviewTest($input: ReviewTestInput!) { reviewTest(input: $input) { updatedTests { id status } userErrors { message } } }\",\n  \"variables\": { \"input\": { \"testId\": \"TEST_ID\", \"status\": \"ACCEPTED\", \"batch\": \"SPEC\" } }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Accept, deny, or reset a visual test, optionally batched across the spec, component, or whole build."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects and Accounts",
+      "item": [
+        {
+          "name": "Get a project",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query Project($id: ID!) { project(id: $id) { id name features { uiReview uiTests } branchNames webUrl } }\",\n  \"variables\": { \"id\": \"PROJECT_ID\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Resolve project name, enabled features, branch names, and web URLs."
+          }
+        },
+        {
+          "name": "Get the authenticated viewer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query Viewer { viewer { id } }\"\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Return the authenticated user for the supplied token."
+          }
+        },
+        {
+          "name": "Create a CLI token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"mutation CreateCLIToken($projectId: String!) { createCLIToken(projectId: $projectId) }\",\n  \"variables\": { \"projectId\": \"PROJECT_ID\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Mint a short-lived CLI token from a project ID for authenticating build uploads."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Storybook and Stories",
+      "item": [
+        {
+          "name": "Get a published Storybook by URL",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"query\": \"query Storybook($url: URL!) { storybook(url: $url) { __typename } }\",\n  \"variables\": { \"url\": \"https://STORYBOOK_URL\" }\n}" },
+            "url": { "raw": "{{baseUrl}}", "host": ["{{baseUrl}}"] },
+            "description": "Read the published Storybook for a build and its components/stories."
+          }
+        }
+      ]
+    }
+  ]
+}
