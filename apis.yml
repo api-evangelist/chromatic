@@ -92,6 +92,11 @@ apis:
 - aid: chromatic:chromatic-projects-accounts-api
   name: Chromatic Projects and Accounts API
   tags:
+  - Project
+  - Account
+  - Tokens
+  - UI Testing
+  tags_raw:
   - Projects
   - Accounts
   - Tokens
