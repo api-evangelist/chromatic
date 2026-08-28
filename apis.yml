@@ -11,6 +11,17 @@ description: Chromatic is a cloud visual testing and UI review platform built by
   integration. Its primary developer surface is the Chromatic CLI, which uploads
   builds and drives testing over a documented public GraphQL API at
   index.chromatic.com used by the CLI and the Storybook Visual Tests addon.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: freemium
   onboarding: unknown
