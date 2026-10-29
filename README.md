@@ -1,4 +1,4 @@
-# Chromatic (chromatic)
+# Chromatic
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,118 +64,121 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Chromatic is a cloud visual testing and UI review platform built by the maintainers of Storybook (Chroma Software Inc.). It captures snapshots of components and pages across cloud browsers, then compares each new snapshot to a stored baseline to catch visual regressions in appearance, layout, fonts, and color. Chromatic runs visual tests, interaction tests, and accessibility (axe) tests against Storybook, Playwright, and Cypress, with UI Review, TurboSnap change detection, and Git/CI integration.
+Chromatic is a cloud visual testing and UI review platform built by the maintainers of Storybook. It captures snapshots of components and pages across cloud browsers, then compares each new snapshot to a stored baseline to catch visual regressions in appearance, layout, fonts, and color. Chromatic runs visual tests, interaction tests, and accessibility (axe) tests against Storybook, Playwright, and Cypress, with UI Review, TurboSnap change detection, and Git/CI integration. Its primary developer surface is the Chromatic CLI, which uploads builds and drives testing over a documented public GraphQL API at index.chromatic.com used by the CLI and the Storybook Visual Tests addon.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/chromatic/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/chromatic/refs/heads/main/apis.yml)
+**Areas:** Visual Testing · Visual Regression · Storybook · UI Testing · Snapshot Testing · Frontend · GraphQL
 
-## Access model (be honest)
+## Chromatic on APIs.io
 
-Chromatic's primary developer surface is the **Chromatic CLI** (`npx chromatic`), which uploads Storybook / Playwright / Cypress builds and drives the visual-testing workflow. Under the hood the CLI and the official Storybook **Visual Tests addon** talk to a **documented public GraphQL API** at `https://index.chromatic.com/graphql`. The addon repository vendors and version-pins the public schema (`src/gql/public-schema.graphql`), so the schema, its query/mutation fields, and its types are real and sourced — a mirror is included here at [`graphql/chromatic-public-schema.graphql`](graphql/chromatic-public-schema.graphql).
+Everything profiled for Chromatic is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/chromatic/](https://apis.io/providers/chromatic/)** — or go straight to one of the APIs or properties below.
 
-Caveats worth stating plainly:
+### APIs (4)
 
-- This is a **workflow API**, not a general-purpose management API. It exposes builds, tests (with accept/deny review), projects/accounts, and the published Storybook — the things the CLI and addon need — not a full CRUD control plane.
-- Authentication is a per-project **project token** (`CHROMATIC_PROJECT_TOKEN`) for CI/CLI runs, or a user OAuth token for the addon.
-- There is **no separate public REST API** and **no public WebSocket API**. Build progress is obtained by polling GraphQL; CI results surface as Git PR status checks.
-- The four "APIs" below are an **editorial grouping** of the single GraphQL endpoint by resource area (an API Evangelist cataloging convention). The endpoint, fields, and types are real; the split into named APIs is ours.
+- [Chromatic Builds API](https://apis.io/apis/chromatic/chromatic-builds-api/) — Query builds produced by the Chromatic CLI - the `build(id)` and `project.lastBuild(...)` GraphQL fields expose build number, status (IN_PROGRESS, PASSED,…
+- [Chromatic Tests and Review API](https://apis.io/apis/chromatic/chromatic-tests-review-api/) — Inspect and act on individual visual tests. A Test carries its status, result, baseline, and per-browser snapshot comparisons (TestComparison with base/head…
+- [Chromatic Projects and Accounts API](https://apis.io/apis/chromatic/chromatic-projects-accounts-api/) — Resolve project and account context. The `project(id)` field returns the project name, enabled features (uiReview, uiTests), branch names, project token,…
+- [Chromatic Storybook and Stories API](https://apis.io/apis/chromatic/chromatic-storybook-stories-api/) — Read the published Storybook and its structure. The `storybook(url)` query and the Story and Component node types expose the components and stories captured…
 
-## Tags
+### Published properties
 
-- Visual Testing
-- Visual Regression
-- Storybook
-- UI Testing
-- Snapshot Testing
-- Frontend
-- GraphQL
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Timestamps
+#### GraphQL (1)
 
-- **Created:** 2026-07-11
-- **Modified:** 2026-07-11
+GraphQL schemas.
 
-## APIs
+- [Chromatic GraphQL API](https://apis.io/graphqls/chromatic/chromatic-graphql/)
 
-### Chromatic Builds API
+#### MCP servers (1)
 
-Query builds produced by the Chromatic CLI — `build(id)` and `project.lastBuild(...)` expose build number, status, result, browsers, Git commit/branch/slug, component and story counts, published Storybook URLs, and snapshot timings.
+Model Context Protocol servers that expose the API to agents.
 
-- **Human URL:** [https://www.chromatic.com/docs/cli/](https://www.chromatic.com/docs/cli/)
-- **Base URL:** `https://index.chromatic.com/graphql`
+- [chromatic](https://apis.io/servers/chromatic/chromatic/)
 
-#### Properties
+#### Collections (1)
 
-- [Documentation](https://www.chromatic.com/docs/cli/)
-- [GraphQL Schema](graphql/chromatic-public-schema.graphql)
-- [GraphQL Overview](graphql/chromatic-graphql.md)
-- [Open Collection](collections/chromatic.opencollection.json)
-- [Postman Collection](collections/chromatic.postman_collection.json)
+Postman and Open Collection request collections.
 
-### Chromatic Tests and Review API
+- [Chromatic Public GraphQL API](https://apis.io/collections/chromatic/open-chromatic/)
 
-Inspect and act on individual visual tests. A Test carries status, result, baseline, and per-browser snapshot comparisons (base/head captures and pixel diffs). The `reviewTest` mutation accepts, denies, or resets changes, optionally batched across a story, component, or whole build.
+#### Plans and pricing (1)
 
-- **Human URL:** [https://www.chromatic.com/docs/review/](https://www.chromatic.com/docs/review/)
-- **Base URL:** `https://index.chromatic.com/graphql`
+Published plans, tiers and prices.
 
-#### Properties
+- [Chromatic Plans Pricing](https://apis.io/plans/chromatic/chromatic-plans-pricing/)
 
-- [Documentation](https://www.chromatic.com/docs/review/)
-- [GraphQL Schema](graphql/chromatic-public-schema.graphql)
-- [GraphQL Overview](graphql/chromatic-graphql.md)
-- [Open Collection](collections/chromatic.opencollection.json)
-- [Postman Collection](collections/chromatic.postman_collection.json)
+#### Rate limits (1)
 
-### Chromatic Projects and Accounts API
+Published request limits.
 
-Resolve project and account context. `project(id)` returns name, features (uiReview, uiTests), branch names, project token, and manage/web URLs; `account(id)` and `viewer` expose account name, subscription status, and project lists. The `createCLIToken` mutation mints a short-lived CLI token.
+- [Chromatic Rate Limits](https://apis.io/rate-limits/chromatic/chromatic-rate-limits/)
 
-- **Human URL:** [https://www.chromatic.com/docs/setup/](https://www.chromatic.com/docs/setup/)
-- **Base URL:** `https://index.chromatic.com/graphql`
+#### FinOps (1)
 
-#### Properties
+What the API costs to run, by operation.
 
-- [Documentation](https://www.chromatic.com/docs/setup/)
-- [GraphQL Schema](graphql/chromatic-public-schema.graphql)
-- [GraphQL Overview](graphql/chromatic-graphql.md)
-- [Open Collection](collections/chromatic.opencollection.json)
-- [Postman Collection](collections/chromatic.postman_collection.json)
+- [Chromatic Finops](https://apis.io/finops/chromatic/chromatic-finops/)
 
-### Chromatic Storybook and Stories API
+## Where to find this API
 
-Read the published Storybook and its structure. The `storybook(url)` query and the Story and Component node types expose the components and stories captured in a build, their CSF story IDs, test parameters, viewport/modes, and canvas URLs.
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
-- **Human URL:** [https://www.chromatic.com/docs/storybook/](https://www.chromatic.com/docs/storybook/)
-- **Base URL:** `https://index.chromatic.com/graphql`
-
-#### Properties
-
-- [Documentation](https://www.chromatic.com/docs/storybook/)
-- [GraphQL Schema](graphql/chromatic-public-schema.graphql)
-- [GraphQL Overview](graphql/chromatic-graphql.md)
-- [Open Collection](collections/chromatic.opencollection.json)
-- [Postman Collection](collections/chromatic.postman_collection.json)
-
-## Common Properties
-
-- [GitHub Organization](https://github.com/chromaui)
-- [LinkedIn](https://www.linkedin.com/company/chromaticcom)
 - [Website](https://www.chromatic.com)
 - [Documentation](https://www.chromatic.com/docs/)
-- [Plans](plans/chromatic-plans-pricing.yml)
-- [Rate Limits](rate-limits/chromatic-rate-limits.yml)
-- [Fin Ops](finops/chromatic-finops.yml)
+- [Blog](https://www.chromatic.com/blog/)
+- [GitHub](https://github.com/chromaui)
 
-## Pricing (captured 2026-07-11)
+## API Evangelist rating
 
-| Plan | Price | Included snapshots/mo | Notes |
-|------|-------|-----------------------|-------|
-| Free | $0 | 5,000 | Chrome only; unlimited projects/users; no card |
-| Starter | $179/mo | 35,000 | Adds Safari/Firefox/Edge; overage ~$0.008/snapshot |
-| Pro | $399/mo | 85,000 | Adds custom domain; overage ~$0.008/snapshot |
-| Enterprise | Custom | Unlimited | SSO, custom Git, SLA, data retention |
+**Kin Score 21.1** — emerging · rubric 0.25.0 · scored 2026-10-23
 
-## Maintainers
+| Facet | Score |
+|---|---|
+| Discoverability | 73.3 |
+| Contract quality | 39.4 |
+| Contract governance | 0.0 |
+| Operational transparency | 10.5 |
+| Developer ergonomics | 16.2 |
+| Access clarity | 7.9 |
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Agent readiness 25.8** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | — |
+| Idempotency | — |
+| Error Semantics | — |
+| OpenAPI Examples | — |
+| Rate Limit Signal | derived (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | na |
+
+**Regulatory alignment 0.0** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/chromatic/](https://apis.io/providers/chromatic/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Chromatic: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/chromatic/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
